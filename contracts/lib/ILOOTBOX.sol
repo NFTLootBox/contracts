@@ -2,12 +2,7 @@
 
 pragma solidity 0.7.3;
 
-import "./Address.sol";
-
-/**
- * @dev Interface of the ERC20 standard as defined in the EIP.
- */
-interface IERC20 {
+interface ILOOTBOX {
     /**
      * @dev Returns the amount of tokens in existence.
      */

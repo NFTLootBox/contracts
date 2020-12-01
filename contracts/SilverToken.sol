@@ -5,6 +5,8 @@ pragma solidity 0.7.3;
 import "./lib/Context.sol";
 import "./lib/IERC20.sol";
 import "./lib/SafeMath.sol";
+import "./lib/Ownable.sol";
+import "./lib/ReentrancyGuard.sol";
 
 /**
  * @dev Implementation of the {IERC20} interface.
@@ -30,7 +32,7 @@ import "./lib/SafeMath.sol";
  * functions have been added to mitigate the well-known issues around setting
  * allowances. See {IERC20-approve}.
  */
-contract SilverToken is Context, IERC20 {
+contract SilverToken is Context, ReentrancyGuard, IERC20, Ownable {
     using SafeMath for uint256;
 
     mapping (address => uint256) private _balances;
@@ -42,6 +44,8 @@ contract SilverToken is Context, IERC20 {
     string private _name;
     string private _symbol;
     uint8 private _decimals;
+
+    address private minter;
 
     /**
      * @dev Sets the values for {name} and {symbol}, initializes {decimals} with
@@ -56,6 +60,10 @@ contract SilverToken is Context, IERC20 {
         _name = name_;
         _symbol = symbol_;
         _decimals = 18;
+    }
+
+    function setPool(address _minter) public onlyOwner {
+        minter = _minter;
     }
 
     /**
@@ -112,7 +120,7 @@ contract SilverToken is Context, IERC20 {
      * - `recipient` cannot be the zero address.
      * - the caller must have a balance of at least `amount`.
      */
-    function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
+    function transfer(address recipient, uint256 amount) public override nonReentrant returns (bool) {
         _transfer(_msgSender(), recipient, amount);
         return true;
     }
@@ -120,7 +128,7 @@ contract SilverToken is Context, IERC20 {
     /**
      * @dev See {IERC20-allowance}.
      */
-    function allowance(address owner, address spender) public view virtual override returns (uint256) {
+    function allowance(address owner, address spender) public view override returns (uint256) {
         return _allowances[owner][spender];
     }
 
@@ -131,7 +139,7 @@ contract SilverToken is Context, IERC20 {
      *
      * - `spender` cannot be the zero address.
      */
-    function approve(address spender, uint256 amount) public virtual override returns (bool) {
+    function approve(address spender, uint256 amount) public override nonReentrant returns (bool) {
         _approve(_msgSender(), spender, amount);
         return true;
     }
@@ -149,7 +157,7 @@ contract SilverToken is Context, IERC20 {
      * - the caller must have allowance for ``sender``'s tokens of at least
      * `amount`.
      */
-    function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
+    function transferFrom(address sender, address recipient, uint256 amount) public override nonReentrant returns (bool) {
         _transfer(sender, recipient, amount);
         _approve(sender, _msgSender(), _allowances[sender][_msgSender()].sub(amount, "ERC20: transfer amount exceeds allowance"));
         return true;
@@ -167,7 +175,7 @@ contract SilverToken is Context, IERC20 {
      *
      * - `spender` cannot be the zero address.
      */
-    function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
+    function increaseAllowance(address spender, uint256 addedValue) public virtual nonReentrant returns (bool) {
         _approve(_msgSender(), spender, _allowances[_msgSender()][spender].add(addedValue));
         return true;
     }
@@ -186,7 +194,7 @@ contract SilverToken is Context, IERC20 {
      * - `spender` must have allowance for the caller of at least
      * `subtractedValue`.
      */
-    function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
+    function decreaseAllowance(address spender, uint256 subtractedValue) public virtual nonReentrant returns (bool) {
         _approve(_msgSender(), spender, _allowances[_msgSender()][spender].sub(subtractedValue, "ERC20: decreased allowance below zero"));
         return true;
     }
@@ -235,6 +243,11 @@ contract SilverToken is Context, IERC20 {
         emit Transfer(address(0), account, amount);
     }
 
+    function mint(address to, uint256 amount) public override nonReentrant {
+        require(_msgSender() == minter, "Only minter can mint");
+        _mint(to, amount);
+    }
+
     /**
      * @dev Destroys `amount` tokens from `account`, reducing the
      * total supply.
@@ -254,6 +267,11 @@ contract SilverToken is Context, IERC20 {
         _balances[account] = _balances[account].sub(amount, "ERC20: burn amount exceeds balance");
         _totalSupply = _totalSupply.sub(amount);
         emit Transfer(account, address(0), amount);
+    }
+
+    function burn(uint256 amount) public nonReentrant {
+        require(amount <= balanceOf(_msgSender()), "Burn more than balance");
+        _burn(_msgSender(), amount);
     }
 
     /**
