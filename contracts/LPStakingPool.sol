@@ -7,16 +7,16 @@ import "./lib/IERC20.sol";
 import "./lib/Context.sol";
 import "./lib/ReentrancyGuard.sol";
 
-contract LOOTStakingPool is ReentrancyGuard, Context {
+contract LPStakingPool is ReentrancyGuard, Context {
   using SafeMath for uint256;
 
-  constructor(address _loot, address _silver) {
-    LOOT = IERC20(_loot);
-    SILVER = IERC20(_silver);
+  constructor(address _lp, address _gold) {
+    LP = IERC20(_lp);
+    GOLD = IERC20(_gold);
   }
 
-  IERC20 private LOOT;
-  IERC20 private SILVER;
+  IERC20 private LP;
+  IERC20 private GOLD;
 
   address private feeAddress = 0x4Cf135b4f0236B0fC55DfA9a09B25843416cE023;
 
@@ -42,7 +42,7 @@ contract LOOTStakingPool is ReentrancyGuard, Context {
 
   function earned(address account) public view returns (uint256) {
     uint256 blockTime = block.timestamp;
-    return reward[account].add(blockTime.sub(lastUpdateTime[account]).mul(1e18).div(86400).mul(balanceOf(account).div(1e19)));
+    return reward[account].add(blockTime.sub(lastUpdateTime[account]).mul(1e18).div(43200).mul(balanceOf(account).div(1e19)));
   }
 
   function stake(uint256 amount) public updateReward(_msgSender()) nonReentrant {
@@ -50,15 +50,15 @@ contract LOOTStakingPool is ReentrancyGuard, Context {
     uint256 fee = amount.div(100);
     uint256 stakeAmount = amount.sub(fee);
     stakedBalance[_msgSender()] = stakedBalance[_msgSender()].add(stakeAmount);
-    LOOT.transferFrom(_msgSender(), address(this), amount);
-    LOOT.transfer(feeAddress, fee);
+    LP.transferFrom(_msgSender(), address(this), amount);
+    LP.transfer(feeAddress, fee);
     emit Staked(_msgSender(), stakeAmount);
   }
 
   function withdraw(uint256 amount) public updateReward(_msgSender()) nonReentrant {
     require(amount > 0, "Cannot withdraw 0");
     require(amount <= balanceOf(_msgSender()), "Cannot withdraw more than balance");
-    LOOT.transfer(_msgSender(), amount);
+    LP.transfer(_msgSender(), amount);
     stakedBalance[_msgSender()] = stakedBalance[_msgSender()].sub(amount);
     emit Unstake(_msgSender(), amount);
   }
@@ -71,7 +71,7 @@ contract LOOTStakingPool is ReentrancyGuard, Context {
     require(reward[_msgSender()] > 0, "Nothing to redeem");
     uint256 amount = reward[_msgSender()];
     reward[_msgSender()] = 0;
-    SILVER.mint(_msgSender(), amount);
+    GOLD.mint(_msgSender(), amount);
     emit Redeem(_msgSender(), amount);
   }
 }
