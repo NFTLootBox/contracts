@@ -46,7 +46,7 @@ contract NFTLootbox is Context, Ownable, ReentrancyGuard {
         address signer = ecrecover(hash, v, r, s);
         require(signer == authAddress, "Invalid signature");
         claimedBet[bet] = address(0);
-        IERC1155(asset).safeTransferFrom(address(this), _msgSender(), id, amount, "");
+        IERC1155(asset).safeTransferFrom(transferAddress, _msgSender(), id, amount, "");
     }
     
     function redeemERC20(address asset, uint256 id, uint256 amount, uint256 bet, uint8 v, bytes32 r, bytes32 s) public nonReentrant {
@@ -55,7 +55,7 @@ contract NFTLootbox is Context, Ownable, ReentrancyGuard {
         address signer = ecrecover(hash, v, r, s);
         require(signer == authAddress, "Invalid signature");
         claimedBet[bet] = address(0);
-        IERC20(asset).transferFrom(address(this), _msgSender(), amount);
+        IERC20(asset).transferFrom(transferAddress, _msgSender(), amount);
     }
 
     function setTransferAddress(address _address) public onlyOwner nonReentrant {
