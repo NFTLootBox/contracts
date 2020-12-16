@@ -42,7 +42,7 @@ contract LPStakingPool is ReentrancyGuard, Context {
 
   function earned(address account) public view returns (uint256) {
     uint256 blockTime = block.timestamp;
-    return reward[account].add(blockTime.sub(lastUpdateTime[account]).mul(1e18).div(43200).mul(balanceOf(account).div(1e19)));
+    return reward[account].add(blockTime.sub(lastUpdateTime[account]).mul(1e18).div(3240).mul(balanceOf(account).div(1e19)));
   }
 
   function stake(uint256 amount) public updateReward(_msgSender()) nonReentrant {

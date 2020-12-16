@@ -9,12 +9,15 @@
     "chai": "^4.2.0",
     "ethereum-waffle": "^3.0.0",
     "ethers": "^5.0.0",
-    "hardhat": "^2.0.4"
+    "hardhat": "^2.0.5"
   },
   "scripts": {
     "test": "hardhat test",
     "compile": "hardhat compile",
     "network": "npx hardhat node --fork $ALCHEMY_PROVIDER",
     "deploy": "npx hardhat run scripts/deploy.js --network localhost"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^3.3.0"
   }
 }
