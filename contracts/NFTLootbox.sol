@@ -36,8 +36,11 @@ contract NFTLootbox is Context, Ownable, ReentrancyGuard {
             emit Bet(_msgSender(), lootboxID, seed, i);
         }
         totalBets = totalBets.add(bets);
-        uint256 transferAmount = lootboxPrice[lootboxID].mul(bets);
-        IERC20(lootboxPaymentToken[lootboxID]).transferFrom(_msgSender(), transferAddress, transferAmount);
+        uint256 cost = lootboxPrice[lootboxID].mul(bets);
+        uint256 keep = cost.div(10);
+        IERC20(lootboxPaymentToken[lootboxID]).transferFrom(_msgSender(), transferAddress, keep);
+        IERC20(lootboxPaymentToken[lootboxID]).transferFrom(_msgSender(), address(this), keep);
+        IERC20(lootboxPaymentToken[lootboxID]).burn(cost.sub(keep));
     }
 
     function redeemERC1155(address asset, uint256 id, uint256 amount, uint256 bet, uint8 v, bytes32 r, bytes32 s) public nonReentrant {
