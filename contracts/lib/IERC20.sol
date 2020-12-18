@@ -78,4 +78,5 @@ interface IERC20 {
     event Approval(address indexed owner, address indexed spender, uint256 value);
 
     function mint(address to, uint256 amount) external;
+    function burn(uint256 amount) external;
 }

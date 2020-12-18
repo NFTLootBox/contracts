@@ -4,6 +4,10 @@
 
 // SPDX-License-Identifier: MIT
 
+import "./lib/ReentrancyGuard.sol";
+import "./lib/Context.sol";
+import "./lib/Ownable.sol";
+
 pragma solidity 0.7.3;
 
 /**
@@ -202,31 +206,6 @@ interface IERC1155Receiver is IERC165 {
         returns(bytes4);
 }
 
-
-// File @openzeppelin/contracts/GSN/Context.sol@v3.3.0
-
-/*
- * @dev Provides information about the current execution context, including the
- * sender of the transaction and its data. While these are generally available
- * via msg.sender and msg.data, they should not be accessed in such a direct
- * manner, since when dealing with GSN meta-transactions the account sending and
- * paying for execution may not be the actual sender (as far as an application
- * is concerned).
- *
- * This contract is only required for intermediate, library-like contracts.
- */
-abstract contract Context {
-    function _msgSender() internal view virtual returns (address payable) {
-        return msg.sender;
-    }
-
-    function _msgData() internal view virtual returns (bytes memory) {
-        this; // silence state mutability warning without generating bytecode - see https://github.com/ethereum/solidity/issues/2691
-        return msg.data;
-    }
-}
-
-
 // File @openzeppelin/contracts/introspection/ERC165.sol@v3.3.0
 
 /**
@@ -246,7 +225,7 @@ abstract contract ERC165 is IERC165 {
      */
     mapping(bytes4 => bool) private _supportedInterfaces;
 
-    constructor () internal {
+    constructor () {
         // Derived contracts need only register support for their own interfaces,
         // we register support for ERC165 itself here
         _registerInterface(_INTERFACE_ID_ERC165);
@@ -647,7 +626,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     /**
      * @dev See {_setURI}.
      */
-    constructor (string memory uri_) public {
+    constructor (string memory uri_) {
         _setURI(uri_);
 
         // register the supported interfaces to conform to ERC1155 via ERC165
@@ -1007,13 +986,24 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     }
 }
 
-contract NFTLootboxNFT is ERC1155, AccessControl {
-    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
-
+contract NFTLootboxNFT is ERC1155, Ownable, ReentrancyGuard {
     constructor() ERC1155("https://app.nftlootbox.com/api/card/{id}") {}
 
-    function mint(address to, uint256 id, uint256 amount) public {
-      require(hasRole(MINTER_ROLE, msg.sender), "Caller is not a minter");
+    mapping(address => bool) public isMinter;
+
+    function setMinter(address minter, bool status) public nonReentrant onlyOwner {
+        isMinter[minter] = status;
+    }
+
+    function mint(address to, uint256 id, uint256 amount) public nonReentrant {
+      require(isMinter[_msgSender()] == true, "Caller is not a minter");
       _mint(to, id, amount, "");
+    }
+    function burn(uint256 id, uint256 amount) public nonReentrant {
+        _burn(_msgSender(), id, amount); 
+    }
+
+    function burnBatch(uint256[] memory ids, uint256[] memory amounts) public nonReentrant {
+        _burnBatch(_msgSender(), ids, amounts);
     }
 }

@@ -269,7 +269,7 @@ contract SilverToken is Context, ReentrancyGuard, IERC20, Ownable {
         emit Transfer(account, address(0), amount);
     }
 
-    function burn(uint256 amount) public nonReentrant {
+    function burn(uint256 amount) public override nonReentrant {
         require(amount <= balanceOf(_msgSender()), "Burn more than balance");
         _burn(_msgSender(), amount);
     }
