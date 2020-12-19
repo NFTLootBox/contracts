@@ -6,8 +6,10 @@ import "./lib/SafeMath.sol";
 import "./lib/IERC20.sol";
 import "./lib/Context.sol";
 import "./lib/ReentrancyGuard.sol";
+import "./IBOOST.sol";
+import "./lib/Ownable.sol";
 
-contract LOOTStakingPool is ReentrancyGuard, Context {
+contract LOOTStakingPool is ReentrancyGuard, Context, Ownable {
   using SafeMath for uint256;
 
   constructor(address _loot, address _silver) {
@@ -17,6 +19,11 @@ contract LOOTStakingPool is ReentrancyGuard, Context {
 
   IERC20 private LOOT;
   IERC20 private SILVER;
+  IBOOST private BOOST;
+
+  function setBoostContract(address _address) public onlyOwner {
+    BOOST = IBOOST(_address);
+  }
 
   address private feeAddress = 0x4Cf135b4f0236B0fC55DfA9a09B25843416cE023;
 
@@ -40,9 +47,20 @@ contract LOOTStakingPool is ReentrancyGuard, Context {
     return stakedBalance[account];
   }
 
+  function manualUpdate(address account) public nonReentrant {
+    if (account != address(0)) {
+      reward[account] = earned(account);
+      lastUpdateTime[account] = block.timestamp;
+    }
+  }
+
   function earned(address account) public view returns (uint256) {
     uint256 blockTime = block.timestamp;
-    return reward[account].add(blockTime.sub(lastUpdateTime[account]).mul(1e18).div(86400).mul(balanceOf(account).div(1e19)));
+    uint256 earnedAmount = blockTime.sub(lastUpdateTime[account]).mul(1e18).div(86400).mul(balanceOf(account).div(1e19));
+    if (BOOST.hasBoost(account) == true) {
+      earnedAmount = earnedAmount.mul(11).div(10);
+    }
+    return reward[account].add(earnedAmount);
   }
 
   function stake(uint256 amount) public updateReward(_msgSender()) nonReentrant {
