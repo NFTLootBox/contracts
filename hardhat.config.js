@@ -18,4 +18,19 @@ task("accounts", "Prints the list of accounts", async () => {
  */
 module.exports = {
   solidity: "0.7.3",
+  networks: {
+    goerli: {
+      url:
+        "https://eth-goerli.alchemyapi.io/v2/-pLWJIKhK8OxF1qNxqgwCkSYSrzRKT3n",
+      accounts: [
+        "0xc9a996bad4f86e1485b36e551b2e9c05ddd09b365940beff21da501539cfb0b0",
+      ],
+    },
+    ganache: {
+      url: "http://localhost:8545",
+      accounts: [
+        "0xc9a996bad4f86e1485b36e551b2e9c05ddd09b365940beff21da501539cfb0b0",
+      ],
+    },
+  },
 };

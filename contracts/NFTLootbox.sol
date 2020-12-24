@@ -16,7 +16,7 @@ contract NFTLootbox is Context, Ownable, ReentrancyGuard {
         transferAddress = _transferAddress;
     }
 
-    event Bet(address account, uint256 lootboxID, uint256 seed, uint256 nonce);
+    event Bet(uint256 indexed bet, address account, uint256 lootboxID, uint256 seed, uint256 nonce);
     event UpdateLootbox(uint256 indexed id, address paymentToken, uint256 price);
 
     mapping(uint256 => address) public lootboxPaymentToken;
@@ -31,15 +31,15 @@ contract NFTLootbox is Context, Ownable, ReentrancyGuard {
         require(lootboxPaymentToken[lootboxID] != address(0), "Invalid Lootbox");
         require(lootboxPrice[lootboxID] > 0, "Invalid Lootbox");
         require(bets > 0, "Must place bets");
-        for (uint256 i; i < bets; i++) {
+        for (uint256 i = 1; i <= bets; i++) {
             claimedBet[totalBets.add(i)] = _msgSender();
-            emit Bet(_msgSender(), lootboxID, seed, i);
+            emit Bet(totalBets.add(i), _msgSender(), lootboxID, seed, i);
         }
         totalBets = totalBets.add(bets);
         uint256 cost = lootboxPrice[lootboxID].mul(bets);
         uint256 keep = cost.div(10);
         IERC20(lootboxPaymentToken[lootboxID]).transferFrom(_msgSender(), transferAddress, keep);
-        IERC20(lootboxPaymentToken[lootboxID]).transferFrom(_msgSender(), address(this), keep);
+        IERC20(lootboxPaymentToken[lootboxID]).transferFrom(_msgSender(), address(this), cost.sub(keep));
         IERC20(lootboxPaymentToken[lootboxID]).burn(cost.sub(keep));
     }
 
