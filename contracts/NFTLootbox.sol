@@ -36,7 +36,7 @@ contract NFTLootbox is Context, Ownable, ReentrancyGuard {
             emit Bet(totalBets.add(i), _msgSender(), lootboxID, seed, i);
         }
         totalBets = totalBets.add(bets);
-        uint256 cost = lootboxPrice[lootboxID].mul(bets);
+        uint256 cost = lootboxPrice[lootboxID].mul(1e18).mul(bets);
         uint256 keep = cost.div(10);
         IERC20(lootboxPaymentToken[lootboxID]).transferFrom(_msgSender(), transferAddress, keep);
         IERC20(lootboxPaymentToken[lootboxID]).transferFrom(_msgSender(), address(this), cost.sub(keep));
@@ -59,6 +59,17 @@ contract NFTLootbox is Context, Ownable, ReentrancyGuard {
         require(signer == authAddress, "Invalid signature");
         claimedBet[bet] = address(0);
         IERC20(asset).transferFrom(transferAddress, _msgSender(), amount);
+    }
+
+    function redeemBulkERC20(address asset, uint256 id, uint256 amount, uint256[] calldata bet, uint8 v, bytes32 r, bytes32 s) public nonReentrant {
+        bytes32 hash = keccak256(abi.encode(asset, id, amount, bet[0]));
+        address signer = ecrecover(hash, v, r, s);
+        require(signer == authAddress, "Invalid signature");
+        for (uint256 i = 0; i < bet.length; i++) {
+            require(claimedBet[bet[i]] == _msgSender(), "Invalid bet");
+            claimedBet[bet[i]] = address(0);
+        }
+        IERC20(asset).transferFrom(transferAddress, _msgSender(), amount * bet.length);
     }
 
     function setTransferAddress(address _address) public onlyOwner nonReentrant {

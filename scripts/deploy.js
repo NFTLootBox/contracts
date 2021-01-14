@@ -1,7 +1,9 @@
 const hre = require("hardhat");
+const { Contract, utils, providers, constants, BigNumber } = require("ethers")
 
-const LootAddress = "0x728852a637cADA1F0C4201a140b9190956c1444c";
-const LootLPAddress = "0x728852a637cADA1F0C4201a140b9190956c1444c";
+const LootAddress = "0x7fE690f4D4A5a7595F0bBaB59F15d5D2DBDB12D2";
+const LootLPAddress = "0x51e6117a70b432592a70572bf6f9e59db3f21c3d";
+const OwnerAddress = '0xcE329eB69fdc71D43A0865EbF3d72c3a11A752bF'
 
 async function main() {
   await hre.run("compile");
@@ -16,7 +18,7 @@ async function main() {
   const goldToken = await GoldToken.deploy("NFTLootBox Gold", "GOLD");
   const NFTLootbox = await hre.ethers.getContractFactory("NFTLootbox");
   const nftLootbox = await NFTLootbox.deploy(
-    "0x4Cf135b4f0236B0fC55DfA9a09B25843416cE023"
+    OwnerAddress
   );
 
   await nft.deployed();
@@ -43,6 +45,12 @@ async function main() {
 
   await silverToken.setPool(lootStakingPool.address);
   await goldToken.setPool(lpStakingPool.address);
+  await junkToken.setPool(OwnerAddress);
+  // await junkToken.approve(OwnerAddress, constants.MaxUint256)
+  await junkToken.approve(nftLootbox.address, constants.MaxUint256)
+  await junkToken.increaseAllowance(nftLootbox.address, 1000000000)
+  // await silverToken.approve(OwnerAddress, 100000000)
+  // await goldToken.approve(OwnerAddress, 100000000)
 
   const BOOST = await hre.ethers.getContractFactory("Boost");
   const boost = await BOOST.deploy(
@@ -54,6 +62,16 @@ async function main() {
   await boost.deployed();
   await lootStakingPool.setBoostContract(boost.address);
   await lpStakingPool.setBoostContract(boost.address);
+  await nftLootbox.updateLootbox(1, silverToken.address, 1)
+  await nftLootbox.updateLootbox(2, goldToken.address, 1)
+  await nftLootbox.updateLootbox(3, junkToken.address, 200)
+  await nftLootbox.setAuthAddress(OwnerAddress)
+  await nftLootbox.setTransferAddress(OwnerAddress)
+  await nft.setMinter(OwnerAddress, true)
+  // await nft.setApprovalForAll(OwnerAddress, true)
+  await nft.setApprovalForAll(nftLootbox.address, true)
+
+
 
   console.clear();
   console.log(`export const LootAddress = "${LootAddress}";`);
@@ -64,6 +82,7 @@ async function main() {
   console.log(`export const LootFarmAddress = "${lootStakingPool.address}";`);
   console.log(`export const LPFarmAddress = "${lpStakingPool.address}";`);
   console.log(`export const LootboxAddress = "${nftLootbox.address}";`);
+  console.log(`export const NFTAddress = "${nft.address}";`);
 }
 
 main()

@@ -56,7 +56,7 @@ contract LOOTStakingPool is ReentrancyGuard, Context, Ownable {
 
   function earned(address account) public view returns (uint256) {
     uint256 blockTime = block.timestamp;
-    uint256 earnedAmount = blockTime.sub(lastUpdateTime[account]).mul(1e18).div(86400).mul(balanceOf(account).div(1e19));
+    uint256 earnedAmount = blockTime.sub(lastUpdateTime[account]).mul(1e18).div(864000).mul(balanceOf(account).div(1e18));
     if (BOOST.hasBoost(account) == true) {
       earnedAmount = earnedAmount.mul(11).div(10);
     }
