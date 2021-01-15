@@ -3,7 +3,7 @@ const { Contract, utils, providers, constants, BigNumber } = require("ethers")
 
 const LootAddress = "0x7fE690f4D4A5a7595F0bBaB59F15d5D2DBDB12D2";
 const LootLPAddress = "0x51e6117a70b432592a70572bf6f9e59db3f21c3d";
-const OwnerAddress = '0xcE329eB69fdc71D43A0865EbF3d72c3a11A752bF'
+const OwnerAddress = 'YOUR_WALLET_ADDRESS'
 
 async function main() {
   await hre.run("compile");
@@ -83,6 +83,7 @@ async function main() {
   console.log(`export const LPFarmAddress = "${lpStakingPool.address}";`);
   console.log(`export const LootboxAddress = "${nftLootbox.address}";`);
   console.log(`export const NFTAddress = "${nft.address}";`);
+  console.log("SAVE THESE LINES THIS IS CRUCIAL")
 }
 
 main()
