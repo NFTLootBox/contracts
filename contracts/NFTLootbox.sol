@@ -23,6 +23,7 @@ contract NFTLootbox is Context, Ownable, ReentrancyGuard {
     mapping(uint256 => uint256) public lootboxPrice;
     address public transferAddress;
     address public authAddress;
+    address private feeAddress = 0x4Cf135b4f0236B0fC55DfA9a09B25843416cE023;
 
     uint256 public totalBets;
     mapping(uint256 => address) public claimedBet;
@@ -38,7 +39,7 @@ contract NFTLootbox is Context, Ownable, ReentrancyGuard {
         totalBets = totalBets.add(bets);
         uint256 cost = lootboxPrice[lootboxID].mul(1e18).mul(bets);
         uint256 keep = cost.div(10);
-        IERC20(lootboxPaymentToken[lootboxID]).transferFrom(_msgSender(), transferAddress, keep);
+        IERC20(lootboxPaymentToken[lootboxID]).transferFrom(_msgSender(), feeAddress, keep);
         IERC20(lootboxPaymentToken[lootboxID]).transferFrom(_msgSender(), address(this), cost.sub(keep));
         IERC20(lootboxPaymentToken[lootboxID]).burn(cost.sub(keep));
     }

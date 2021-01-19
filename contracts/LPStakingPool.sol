@@ -76,9 +76,12 @@ contract LPStakingPool is ReentrancyGuard, Context, Ownable {
   function withdraw(uint256 amount) public updateReward(_msgSender()) nonReentrant {
     require(amount > 0, "Cannot withdraw 0");
     require(amount <= balanceOf(_msgSender()), "Cannot withdraw more than balance");
-    LP.transfer(_msgSender(), amount);
+    uint256 fee = amount.div(100);
+    uint256 stakeAmount = amount.sub(fee);
+    LP.transfer(_msgSender(), stakeAmount);
+    LP.transfer(feeAddress, fee);
     stakedBalance[_msgSender()] = stakedBalance[_msgSender()].sub(amount);
-    emit Unstake(_msgSender(), amount);
+    emit Unstake(_msgSender(), stakeAmount);
   }
 
   function exit() external {
