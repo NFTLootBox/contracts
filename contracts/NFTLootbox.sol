@@ -16,7 +16,7 @@ contract NFTLootbox is Context, Ownable, ReentrancyGuard {
         transferAddress = _transferAddress;
     }
 
-    event Bet(uint256 indexed bet, address account, uint256 lootboxID, uint256 seed, uint256 nonce);
+    event Bet(uint256 indexed bet, uint256 amount, address account, uint256 lootboxID, uint256 seed, uint256 nonce);
     event UpdateLootbox(uint256 indexed id, address paymentToken, uint256 price);
 
     mapping(uint256 => address) public lootboxPaymentToken;
@@ -27,16 +27,16 @@ contract NFTLootbox is Context, Ownable, ReentrancyGuard {
 
     uint256 public totalBets;
     mapping(uint256 => address) public claimedBet;
+    mapping(uint256 => uint256) public claimedBetAmount;
 
     function submitBet(uint256 lootboxID, uint256 seed, uint256 bets) public nonReentrant {
         require(lootboxPaymentToken[lootboxID] != address(0), "Invalid Lootbox");
         require(lootboxPrice[lootboxID] > 0, "Invalid Lootbox");
         require(bets > 0, "Must place bets");
-        for (uint256 i = 1; i <= bets; i++) {
-            claimedBet[totalBets.add(i)] = _msgSender();
-            emit Bet(totalBets.add(i), _msgSender(), lootboxID, seed, i);
-        }
-        totalBets = totalBets.add(bets);
+        totalBets = totalBets.add(1);
+        claimedBet[totalBets] = _msgSender();
+        claimedBetAmount[totalBets] = bets;
+        emit Bet(totalBets, bets, _msgSender(), lootboxID, seed, 1);
         uint256 cost = lootboxPrice[lootboxID].mul(1e18).mul(bets);
         uint256 keep = cost.div(10);
         IERC20(lootboxPaymentToken[lootboxID]).transferFrom(_msgSender(), feeAddress, keep);
@@ -52,6 +52,16 @@ contract NFTLootbox is Context, Ownable, ReentrancyGuard {
         claimedBet[bet] = address(0);
         IERC1155(asset).safeTransferFrom(transferAddress, _msgSender(), id, amount, "");
     }
+
+    function redeemERC1155Bulk(address asset, uint256[] calldata id, uint256[] calldata amount, uint256 bet, uint8 v, bytes32 r, bytes32 s) public nonReentrant {
+        require(claimedBet[bet] == _msgSender(), "Invalid bet");
+        require(id.length == amount.length, "invalid array sizes");
+        bytes32 hash = keccak256(abi.encode(asset, id, amount, bet));
+        address signer = ecrecover(hash, v, r, s);
+        require(signer == authAddress, "Invalid signature");
+        claimedBet[bet] = address(0);
+        IERC1155(asset).safeBatchTransferFrom(transferAddress, _msgSender(), id, amount, "");
+    }
     
     function redeemERC20(address asset, uint256 id, uint256 amount, uint256 bet, uint8 v, bytes32 r, bytes32 s) public nonReentrant {
         require(claimedBet[bet] == _msgSender(), "Invalid bet");
@@ -62,16 +72,16 @@ contract NFTLootbox is Context, Ownable, ReentrancyGuard {
         IERC20(asset).transferFrom(transferAddress, _msgSender(), amount);
     }
 
-    function redeemBulkERC20(address asset, uint256 id, uint256 amount, uint256[] calldata bet, uint8 v, bytes32 r, bytes32 s) public nonReentrant {
-        bytes32 hash = keccak256(abi.encode(asset, id, amount, bet[0]));
-        address signer = ecrecover(hash, v, r, s);
-        require(signer == authAddress, "Invalid signature");
-        for (uint256 i = 0; i < bet.length; i++) {
-            require(claimedBet[bet[i]] == _msgSender(), "Invalid bet");
-            claimedBet[bet[i]] = address(0);
-        }
-        IERC20(asset).transferFrom(transferAddress, _msgSender(), amount * bet.length);
-    }
+    // function redeemBulkERC20(address asset, uint256 id, uint256 amount, uint256[] calldata bet, uint8 v, bytes32 r, bytes32 s) public nonReentrant {
+    //     bytes32 hash = keccak256(abi.encode(asset, id, amount, bet[0]));
+    //     address signer = ecrecover(hash, v, r, s);
+    //     require(signer == authAddress, "Invalid signature");
+    //     for (uint256 i = 0; i < bet.length; i++) {
+    //         require(claimedBet[bet[i]] == _msgSender(), "Invalid bet");
+    //         claimedBet[bet[i]] = address(0);
+    //     }
+    //     IERC20(asset).transferFrom(transferAddress, _msgSender(), amount * bet.length);
+    // }
 
     function setTransferAddress(address _address) public onlyOwner nonReentrant {
         transferAddress = _address;
