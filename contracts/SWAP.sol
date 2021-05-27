@@ -6,6 +6,7 @@ import "./lib/SafeMath.sol";
 import "./lib/ReentrancyGuard.sol";
 import "./NFT.sol"
 
+
 contract SWAP is Context, ReentrancyGuard {
 
     address[] public burnedNFTs;
@@ -32,10 +33,13 @@ contract SWAP is Context, ReentrancyGuard {
     function swapWithHouse(){
         //the ten nfts need to be burned
         for(uint i = 0; i < burnedNFTs.length; i++){
-            IERC1155("what goes in here?")._burn(_msgSender(), burnedNFTs[i], burnedAmount[i])
+            //IERC1155("what goes in here?")._burn(_msgSender(), burnedNFTs[i], burnedAmount[i])
+            NFTLootboxNFT.burn(burnedNFTs[i], burnedAmount[i]);
         }
 
         // the one nft is awarded to the user
+        IERC1155
+
     }
 
 }
