@@ -7,16 +7,35 @@ import "./lib/ReentrancyGuard.sol";
 import "./NFT.sol"
 
 contract SWAP is Context, ReentrancyGuard {
-    
-    mapping(address => uint256) public swappedNFTs;
-    // this should have an array of each nft that is to be swapped along with the quantity of each
+
+    address[] public burnedNFTs;
+    uint256[] public burnedAmount;
     address public awardedNFT;
-    address public user
+    address public user;
 
-    constructor(){
+    constructor(address[] _burnedAddresses, uint256[] _burnedAmount, address _awardedNFT){
+        require(_burnedAddresses.length == _burnedAmount.length);
+        //a mapping of rarities and require need to be made to ensure that the swap economy is adhered to
+        //creates quantity number for the require statement
+        uint quantity = 0;
+        for(uint i = 0; i < _burnedAmount.length; i++){
+            quantity += _burnedAmount[i];
+        }
+        require(quantity == 10);
+        awardedNFT = _awardedNFT;
 
+        user = _msgSender();
     }
 
-    //the ten nfts need to be burned
-    // the one nft is awarded to the user
+    // This is for users to swap their nfts with the sites inventory
+    // in the future users will be able to swap with one another
+    function swapWithHouse(){
+        //the ten nfts need to be burned
+        for(uint i = 0; i < burnedNFTs.length; i++){
+            IERC1155("what goes in here?")._burn(_msgSender(), burnedNFTs[i], burnedAmount[i])
+        }
+
+        // the one nft is awarded to the user
+    }
+
 }
