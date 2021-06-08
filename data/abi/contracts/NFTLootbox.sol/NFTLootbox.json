@@ -21,8 +21,14 @@
       },
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
         "internalType": "address",
-        "name": "account",
+        "name": "user",
         "type": "address"
       },
       {
@@ -131,6 +137,25 @@
         "type": "uint256"
       }
     ],
+    "name": "claimedBetAmount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "name": "lootboxPaymentToken",
     "outputs": [
       {
@@ -178,61 +203,28 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "asset",
+        "name": "junkAsset",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "id",
+        "name": "junkAmount",
         "type": "uint256"
       },
       {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "nftAsset",
+        "type": "address"
       },
       {
         "internalType": "uint256[]",
-        "name": "bet",
+        "name": "id",
         "type": "uint256[]"
       },
       {
-        "internalType": "uint8",
-        "name": "v",
-        "type": "uint8"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "r",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "s",
-        "type": "bytes32"
-      }
-    ],
-    "name": "redeemBulkERC20",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "asset",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
+        "internalType": "uint256[]",
+        "name": "nftAmount",
+        "type": "uint256[]"
       },
       {
         "internalType": "uint256",
@@ -255,50 +247,7 @@
         "type": "bytes32"
       }
     ],
-    "name": "redeemERC1155",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "asset",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "bet",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint8",
-        "name": "v",
-        "type": "uint8"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "r",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "s",
-        "type": "bytes32"
-      }
-    ],
-    "name": "redeemERC20",
+    "name": "redeemBulk",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

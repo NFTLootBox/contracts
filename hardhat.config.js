@@ -21,9 +21,9 @@ module.exports = {
   solidity: "0.7.3",
   networks: {
     goerli: {
-      url: "https://mainnet.infura.io/v3/274e5929f1c74c08b44478e6e4abef8d",
+      url: "https://goerli.infura.io/v3/d6bb37f2857b448ebfb550e005490f39",
       accounts: [
-        "PRIVATE_KEY",
+        "bf78b926dce96fcc42023587b290918243f6a0c09695d94005ea7d0376cf8c1a",
       ],
       gas: "auto"
     }
@@ -34,3 +34,6 @@ module.exports = {
     flat: false,
   },
 };
+
+// https://goerli.infura.io/v3/d6bb37f2857b448ebfb550e005490f39
+// https://mainnet.infura.io/v3/274e5929f1c74c08b44478e6e4abef8d

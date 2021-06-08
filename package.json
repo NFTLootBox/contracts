@@ -15,7 +15,8 @@
     "test": "hardhat test",
     "compile": "hardhat compile",
     "network": "npx hardhat node --fork $ALCHEMY_PROVIDER",
-    "deploy": "npx hardhat run scripts/deploy.js --network goerli"
+    "deploy": "npx hardhat run scripts/deploy.js --network goerli",
+    "oofta": "npx hardhat run scripts/testing.js --network mainnet"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^3.3.0",

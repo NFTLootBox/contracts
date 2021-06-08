@@ -1,9 +1,9 @@
 const hre = require("hardhat");
 const { Contract, utils, providers, constants, BigNumber } = require("ethers")
 
-const LootAddress = "0x7fE690f4D4A5a7595F0bBaB59F15d5D2DBDB12D2";
-const LootLPAddress = "0x51e6117a70b432592a70572bf6f9e59db3f21c3d";
-const OwnerAddress = 'YOUR_WALLET_ADDRESS'
+const LootAddress = "0xDAD72825Ef11552e166eAC56C538184FF22d6372";
+const LootLPAddress = "0x0122c3a115f5a38a824c58cf39096acb4a8c7f2e";
+const OwnerAddress = '0x4E4aeed836e77ae7591776cAE750A720a38ca892'
 
 async function main() {
   await hre.run("compile");
@@ -20,12 +20,15 @@ async function main() {
   const nftLootbox = await NFTLootbox.deploy(
     OwnerAddress
   );
+  const SWAP = await hre.ethers.getContractFactory("SWAP");
+  const swap = await SWAP.deploy("NFTLootBox Swap", "SWAP");
 
   await nft.deployed();
   await junkToken.deployed();
   await silverToken.deployed();
   await goldToken.deployed();
   await nftLootbox.deployed();
+  await swap.deployed()
 
   const LOOTStakingPool = await hre.ethers.getContractFactory(
     "LOOTStakingPool"

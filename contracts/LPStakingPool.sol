@@ -56,7 +56,7 @@ contract LPStakingPool is ReentrancyGuard, Context, Ownable {
 
   function earned(address account) public view returns (uint256) {
     uint256 blockTime = block.timestamp;
-    uint256 earnedAmount = blockTime.sub(lastUpdateTime[account]).mul(1e18).div(32400).mul(balanceOf(account).div(1e18));
+    uint256 earnedAmount = blockTime.sub(lastUpdateTime[account]).mul(balanceOf(account)).div(32481);
     if (BOOST.hasBoost(account) == true) {
       earnedAmount = earnedAmount.mul(11).div(10);
     }
@@ -76,7 +76,7 @@ contract LPStakingPool is ReentrancyGuard, Context, Ownable {
   function withdraw(uint256 amount) public updateReward(_msgSender()) nonReentrant {
     require(amount > 0, "Cannot withdraw 0");
     require(amount <= balanceOf(_msgSender()), "Cannot withdraw more than balance");
-    uint256 fee = amount.div(100);
+    uint256 fee = amount.div(50);
     uint256 stakeAmount = amount.sub(fee);
     LP.transfer(_msgSender(), stakeAmount);
     LP.transfer(feeAddress, fee);
