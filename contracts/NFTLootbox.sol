@@ -2,12 +2,12 @@
 
 pragma solidity 0.7.3;
 
-import "./lib/Context.sol";
-import "./lib/SafeMath.sol";
-import "./lib/Ownable.sol";
-import "./lib/IERC20.sol";
-import "./lib/IERC1155.sol";
-import "./lib/ReentrancyGuard.sol";
+import "./Context.sol";
+import "./SafeMath.sol";
+import "./Ownable.sol";
+import "./IERC20.sol";
+import "./IERC1155.sol";
+import "./ReentrancyGuard.sol";
 
 contract NFTLootbox is Context, Ownable, ReentrancyGuard {
     using SafeMath for uint256;
@@ -16,7 +16,11 @@ contract NFTLootbox is Context, Ownable, ReentrancyGuard {
         transferAddress = _transferAddress;
     }
 
+<<<<<<< HEAD
     event Bet(uint256 indexed bet, uint256 amount, address user, uint256 lootboxID, uint256 seed, uint256 nonce);
+=======
+    event Bet(uint256 indexed bet, uint256 amount, address account, uint256 lootboxID, uint256 seed, uint256 nonce);
+>>>>>>> 56ad73a604226e481e78b2dc634001721203ad66
     event UpdateLootbox(uint256 indexed id, address paymentToken, uint256 price);
 
     mapping(uint256 => address) public lootboxPaymentToken;
@@ -44,6 +48,37 @@ contract NFTLootbox is Context, Ownable, ReentrancyGuard {
         IERC20(lootboxPaymentToken[lootboxID]).burn(cost.sub(keep));
     }
 
+<<<<<<< HEAD
+=======
+    // function redeemERC1155(address asset, uint256 id, uint256 amount, uint256 bet, uint8 v, bytes32 r, bytes32 s) public nonReentrant {
+    //     require(claimedBet[bet] == _msgSender(), "Invalid bet");
+    //     bytes32 hash = keccak256(abi.encode(asset, id, amount, bet));
+    //     address signer = ecrecover(hash, v, r, s);
+    //     require(signer == authAddress, "Invalid signature");
+    //     claimedBet[bet] = address(0);
+    //     IERC1155(asset).safeTransferFrom(transferAddress, _msgSender(), id, amount, "");
+    // }
+
+    // function redeemERC1155Bulk(address asset, uint256[] calldata id, uint256[] calldata amount, uint256 bet, uint8 v, bytes32 r, bytes32 s) public nonReentrant {
+    //     require(claimedBet[bet] == _msgSender(), "Invalid bet");
+    //     require(id.length == amount.length, "invalid array sizes");
+    //     bytes32 hash = keccak256(abi.encode(asset, id, amount, bet));
+    //     address signer = ecrecover(hash, v, r, s);
+    //     require(signer == authAddress, "Invalid signature");
+    //     claimedBet[bet] = address(0);
+    //     IERC1155(asset).safeBatchTransferFrom(transferAddress, _msgSender(), id, amount, "");
+    // }
+    
+    // function redeemERC20(address asset, uint256 id, uint256 amount, uint256 bet, uint8 v, bytes32 r, bytes32 s) public nonReentrant {
+    //     require(claimedBet[bet] == _msgSender(), "Invalid bet");
+    //     bytes32 hash = keccak256(abi.encode(asset, id, amount, bet));
+    //     address signer = ecrecover(hash, v, r, s);
+    //     require(signer == authAddress, "Invalid signature");
+    //     claimedBet[bet] = address(0);
+    //     IERC20(asset).transferFrom(transferAddress, _msgSender(), amount);
+    // }
+
+>>>>>>> 56ad73a604226e481e78b2dc634001721203ad66
     function redeemBulk(address junkAsset, uint256 junkAmount, address nftAsset, uint256[] calldata id, uint256[] calldata nftAmount, uint256 bet, uint8 v, bytes32 r, bytes32 s) public nonReentrant {
         require(claimedBet[bet] == _msgSender(), "Invalid bet");
         bytes32 hash = keccak256(abi.encode(junkAsset, junkAmount, nftAsset, id, nftAmount, bet));
@@ -53,6 +88,20 @@ contract NFTLootbox is Context, Ownable, ReentrancyGuard {
         IERC1155(nftAsset).safeBatchTransferFrom(transferAddress, _msgSender(), id, nftAmount, "");
         IERC20(junkAsset).transferFrom(transferAddress, _msgSender(), junkAmount);
     }
+<<<<<<< HEAD
+=======
+
+    // function redeemBulkERC20(address asset, uint256 id, uint256 amount, uint256[] calldata bet, uint8 v, bytes32 r, bytes32 s) public nonReentrant {
+    //     bytes32 hash = keccak256(abi.encode(asset, id, amount, bet[0]));
+    //     address signer = ecrecover(hash, v, r, s);
+    //     require(signer == authAddress, "Invalid signature");
+    //     for (uint256 i = 0; i < bet.length; i++) {
+    //         require(claimedBet[bet[i]] == _msgSender(), "Invalid bet");
+    //         claimedBet[bet[i]] = address(0);
+    //     }
+    //     IERC20(asset).transferFrom(transferAddress, _msgSender(), amount * bet.length);
+    // }
+>>>>>>> 56ad73a604226e481e78b2dc634001721203ad66
 
     function setTransferAddress(address _address) public onlyOwner {
         require( _address != address(0) );
