@@ -28,7 +28,7 @@
       {
         "indexed": false,
         "internalType": "address",
-        "name": "user",
+        "name": "account",
         "type": "address"
       },
       {

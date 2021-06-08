@@ -9,39 +9,53 @@ async function main() {
   await hre.run("compile");
 
   const NFT = await hre.ethers.getContractFactory("NFTLootboxNFT");
+  console.log("NFT: ", NFT)
   const nft = await NFT.deploy();
+  console.log("nft: ", nft)
   const JunkToken = await hre.ethers.getContractFactory("JunkToken");
+  console.log("JunkToken: ", JunkToken)
   const junkToken = await JunkToken.deploy("NFTLootBox Junk", "JUNK");
+  console.log("junkToken: ", junkToken)
   const SilverToken = await hre.ethers.getContractFactory("SilverToken");
+  console.log("SilverToken: ", SilverToken)
   const silverToken = await SilverToken.deploy("NFTLootBox Silver", "SILVER");
+  console.log("silverToken: ", silverToken)
   const GoldToken = await hre.ethers.getContractFactory("GoldToken");
+  console.log("GoldToken: ", GoldToken)
   const goldToken = await GoldToken.deploy("NFTLootBox Gold", "GOLD");
+  console.log("goldToken: ", goldToken)
   const NFTLootbox = await hre.ethers.getContractFactory("NFTLootbox");
+  console.log("NFTLootbox: ", NFTLootbox)
   const nftLootbox = await NFTLootbox.deploy(
     OwnerAddress
   );
-  const SWAP = await hre.ethers.getContractFactory("SWAP");
-  const swap = await SWAP.deploy("NFTLootBox Swap", "SWAP");
+  console.log("nftlootbox: ", nftLootbox)
+  // const SWAP = await hre.ethers.getContractFactory("SWAP");
+  // const swap = await SWAP.deploy("NFTLootBox Swap", "SWAP");
 
   await nft.deployed();
   await junkToken.deployed();
   await silverToken.deployed();
   await goldToken.deployed();
   await nftLootbox.deployed();
-  await swap.deployed()
+  // await swap.deployed()
 
   const LOOTStakingPool = await hre.ethers.getContractFactory(
     "LOOTStakingPool"
   );
+  console.log("LOOTStakingPool: ", LOOTStakingPool)
   const lootStakingPool = await LOOTStakingPool.deploy(
     LootAddress,
     silverToken.address
   );
+  console.log("LootStakingPool: ", lootStakingPool)
   const LPStakingPool = await hre.ethers.getContractFactory("LPStakingPool");
+  console.log("LPStakingPool: ", LPStakingPool)
   const lpStakingPool = await LPStakingPool.deploy(
     LootLPAddress,
     goldToken.address
   );
+  console.log("lpStakingPool: ", lpStakingPool)
 
   await lootStakingPool.deployed();
   await lpStakingPool.deployed();
@@ -56,12 +70,14 @@ async function main() {
   // await goldToken.approve(OwnerAddress, 100000000)
 
   const BOOST = await hre.ethers.getContractFactory("Boost");
+  console.log("BOOST: ", BOOST)
   const boost = await BOOST.deploy(
     1,
     nft.address,
     lootStakingPool.address,
     lpStakingPool.address
   );
+  console.log("boost: ", boost);
   await boost.deployed();
   await lootStakingPool.setBoostContract(boost.address);
   await lpStakingPool.setBoostContract(boost.address);
