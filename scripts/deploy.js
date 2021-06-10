@@ -9,36 +9,43 @@ async function main() {
   await hre.run("compile");
 
   const NFT = await hre.ethers.getContractFactory("NFTLootboxNFT");
-  console.log("NFT: ", NFT)
+  console.log("NFT: ")
   const nft = await NFT.deploy();
-  console.log("nft: ", nft)
+  console.log("nft: ")
   const JunkToken = await hre.ethers.getContractFactory("JunkToken");
-  console.log("JunkToken: ", JunkToken)
+  console.log("JunkToken: ")
   const junkToken = await JunkToken.deploy("NFTLootBox Junk", "JUNK");
-  console.log("junkToken: ", junkToken)
+  console.log("junkToken: ")
   const SilverToken = await hre.ethers.getContractFactory("SilverToken");
-  console.log("SilverToken: ", SilverToken)
+  console.log("SilverToken: ")
   const silverToken = await SilverToken.deploy("NFTLootBox Silver", "SILVER");
-  console.log("silverToken: ", silverToken)
+  console.log("silverToken: ")
   const GoldToken = await hre.ethers.getContractFactory("GoldToken");
-  console.log("GoldToken: ", GoldToken)
+  console.log("GoldToken: ")
   const goldToken = await GoldToken.deploy("NFTLootBox Gold", "GOLD");
-  console.log("goldToken: ", goldToken)
+  console.log("goldToken: ")
   const NFTLootbox = await hre.ethers.getContractFactory("NFTLootbox");
-  console.log("NFTLootbox: ", NFTLootbox)
+  console.log("NFTLootbox: ")
   const nftLootbox = await NFTLootbox.deploy(
     OwnerAddress
   );
-  console.log("nftlootbox: ", nftLootbox)
-  // const SWAP = await hre.ethers.getContractFactory("SWAP");
-  // const swap = await SWAP.deploy("NFTLootBox Swap", "SWAP");
+  console.log("nftlootbox: ")
+  const SWAP = await hre.ethers.getContractFactory("SWAP");
+  const swap = await SWAP.deploy(OwnerAddress);
+  console.log("swap: ");
 
-  await nft.deployed();
+  let res = await nft.deployed();
+  console.log("nft deployed", res)
   await junkToken.deployed();
+  console.log("junktoken deployed")
   await silverToken.deployed();
+  console.log("silverToken deployed")
   await goldToken.deployed();
+  console.log("goldToken deployed")
   await nftLootbox.deployed();
-  // await swap.deployed()
+  console.log("nftLootbox deployed")
+  await swap.deployed()
+  console.log("swap deployed")
 
   const LOOTStakingPool = await hre.ethers.getContractFactory(
     "LOOTStakingPool"
@@ -102,6 +109,7 @@ async function main() {
   console.log(`export const LPFarmAddress = "${lpStakingPool.address}";`);
   console.log(`export const LootboxAddress = "${nftLootbox.address}";`);
   console.log(`export const NFTAddress = "${nft.address}";`);
+  console.log(`export const SwapAddress = ${swap.address}`)
   console.log("SAVE THESE LINES THIS IS CRUCIAL")
 }
 

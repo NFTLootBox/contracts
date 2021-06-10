@@ -23,7 +23,7 @@ module.exports = {
     goerli: {
       url: "https://goerli.infura.io/v3/d6bb37f2857b448ebfb550e005490f39",
       accounts: [
-        "bf78b926dce96fcc42023587b290918243f6a0c09695d94005ea7d0376cf8c1a",
+        "0xbf78b926dce96fcc42023587b290918243f6a0c09695d94005ea7d0376cf8c1a",
       ],
       gas: "auto"
     }

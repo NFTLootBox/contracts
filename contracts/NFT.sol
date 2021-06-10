@@ -986,7 +986,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     }
 }
 
-/*
+
 contract NFTLootboxNFT is ERC1155, Ownable, ReentrancyGuard {
     constructor() ERC1155("https://app.nftlootbox.com/api/card/{id}") {}
 
@@ -1008,4 +1008,3 @@ contract NFTLootboxNFT is ERC1155, Ownable, ReentrancyGuard {
         _burnBatch(_msgSender(), ids, amounts);
     }
 }
-*/

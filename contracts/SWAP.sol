@@ -5,21 +5,18 @@ pragma solidity 0.7.3;
 import "./lib/Context.sol";
 //import "./lib/IERC1155.sol";
 import "./lib/ReentrancyGuard.sol";
-import "./NFTLootboxNFT.sol";
-//import "./NFT.sol";
-//import * as NFTLootboxNFT from "./NFT.sol";
-//import * as NFTLootboxNFT from "./NFTLootboxNFT.sol";
+//import "./NFTLootboxNFT.sol";
+import "./NFT.sol";
 
 contract SWAP is Context, ReentrancyGuard {
     address public authAddress;
     //IERC1155 private NFTInstance;
-    NFTLootboxNFT private NFTInstance;
 
     constructor (address _houseAddress) {
         authAddress = _houseAddress;
         NFTInstance = NFTLootboxNFT(0x9f75A77966ADE660782f73f822c836C32BE6784a);
-        //TransferableNFTInstance = IERC1155(0x9f75A77966ADE660782f73f822c836C32BE6784a);
     }
+    NFTLootboxNFT private NFTInstance;
 
     function _validateSwap(uint256[] memory _burnedAddresses, uint256[] memory _burnedAmount) private {
         require(_burnedAddresses.length == _burnedAmount.length);
