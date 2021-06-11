@@ -15,7 +15,8 @@
     "test": "hardhat test",
     "compile": "hardhat compile",
     "network": "npx hardhat node --fork $ALCHEMY_PROVIDER",
-    "deploy": "npx hardhat run scripts/deploy.js --network goerli",
+    "deploy": "npx hardhat run scripts/deploy.js --network rinkeby",
+    "deploySwap": "npx hardhat run scripts/deploySwap.js --network rinkeby",
     "oofta": "npx hardhat run scripts/testing.js --network mainnet"
   },
   "dependencies": {

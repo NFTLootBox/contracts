@@ -12,9 +12,9 @@ contract SWAP is Context, ReentrancyGuard {
     address public authAddress;
     //IERC1155 private NFTInstance;
 
-    constructor (address _houseAddress) {
+    constructor (address _houseAddress, address _nftAddress) {
         authAddress = _houseAddress;
-        NFTInstance = NFTLootboxNFT(0x9f75A77966ADE660782f73f822c836C32BE6784a);
+        NFTInstance = NFTLootboxNFT(_nftAddress);
     }
     NFTLootboxNFT private NFTInstance;
 

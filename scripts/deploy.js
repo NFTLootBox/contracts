@@ -1,8 +1,8 @@
 const hre = require("hardhat");
 const { Contract, utils, providers, constants, BigNumber } = require("ethers")
 
-const LootAddress = "0xDAD72825Ef11552e166eAC56C538184FF22d6372";
-const LootLPAddress = "0x0122c3a115f5a38a824c58cf39096acb4a8c7f2e";
+const LootAddress = "0x49a2264eB146f0160a1F4CA0acCeC9a66784DC27";
+const LootLPAddress = "0xa6d044677360bdc9b688d64cf3b07aaca252e4fb";
 const OwnerAddress = '0x4E4aeed836e77ae7591776cAE750A720a38ca892'
 
 async function main() {
@@ -30,12 +30,11 @@ async function main() {
     OwnerAddress
   );
   console.log("nftlootbox: ")
-  const SWAP = await hre.ethers.getContractFactory("SWAP");
-  const swap = await SWAP.deploy(OwnerAddress);
-  console.log("swap: ");
-
-  let res = await nft.deployed();
-  console.log("nft deployed", res)
+  
+  await nft.deployed();
+ // const SWAP = await hre.ethers.getContractFactory("SWAP");
+ // const swap = await SWAP.deploy(OwnerAddress, nft.address);
+ // console.log("swap: ");
   await junkToken.deployed();
   console.log("junktoken deployed")
   await silverToken.deployed();
@@ -44,25 +43,25 @@ async function main() {
   console.log("goldToken deployed")
   await nftLootbox.deployed();
   console.log("nftLootbox deployed")
-  await swap.deployed()
-  console.log("swap deployed")
+  // await swap.deployed()
+  // console.log("swap deployed")
 
   const LOOTStakingPool = await hre.ethers.getContractFactory(
     "LOOTStakingPool"
   );
-  console.log("LOOTStakingPool: ", LOOTStakingPool)
+  console.log("LOOTStakingPool: ")
   const lootStakingPool = await LOOTStakingPool.deploy(
     LootAddress,
     silverToken.address
   );
-  console.log("LootStakingPool: ", lootStakingPool)
+  console.log("LootStakingPool: ")
   const LPStakingPool = await hre.ethers.getContractFactory("LPStakingPool");
-  console.log("LPStakingPool: ", LPStakingPool)
+  console.log("LPStakingPool: ")
   const lpStakingPool = await LPStakingPool.deploy(
     LootLPAddress,
     goldToken.address
   );
-  console.log("lpStakingPool: ", lpStakingPool)
+  console.log("lpStakingPool: ")
 
   await lootStakingPool.deployed();
   await lpStakingPool.deployed();
@@ -77,14 +76,14 @@ async function main() {
   // await goldToken.approve(OwnerAddress, 100000000)
 
   const BOOST = await hre.ethers.getContractFactory("Boost");
-  console.log("BOOST: ", BOOST)
+  console.log("BOOST: ")
   const boost = await BOOST.deploy(
     1,
     nft.address,
     lootStakingPool.address,
     lpStakingPool.address
   );
-  console.log("boost: ", boost);
+  console.log("boost: ");
   await boost.deployed();
   await lootStakingPool.setBoostContract(boost.address);
   await lpStakingPool.setBoostContract(boost.address);
@@ -109,7 +108,7 @@ async function main() {
   console.log(`export const LPFarmAddress = "${lpStakingPool.address}";`);
   console.log(`export const LootboxAddress = "${nftLootbox.address}";`);
   console.log(`export const NFTAddress = "${nft.address}";`);
-  console.log(`export const SwapAddress = ${swap.address}`)
+  // console.log(`export const SwapAddress = ${swap.address}`)
   console.log("SAVE THESE LINES THIS IS CRUCIAL")
 }
 

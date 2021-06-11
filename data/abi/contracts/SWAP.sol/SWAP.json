@@ -5,6 +5,11 @@
         "internalType": "address",
         "name": "_houseAddress",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_nftAddress",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
