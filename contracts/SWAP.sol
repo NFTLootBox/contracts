@@ -38,6 +38,9 @@ contract SWAP is Context, ReentrancyGuard {
         address signer = ecrecover(hash, v, r, s);
         require(signer == authAddress, "Invalid signature");
 
+        //transfering nfts to contract
+        NFTInstance.safeBatchTransferFrom(_msgSender(), address(this), idArr, quantArr, "");
+
         //the ten nfts need to be burned
         NFTInstance.burnBatch(idArr, quantArr);
 
