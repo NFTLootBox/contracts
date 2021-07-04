@@ -108,6 +108,7 @@ async function main() {
   console.log(`export const LPFarmAddress = "${lpStakingPool.address}";`);
   console.log(`export const LootboxAddress = "${nftLootbox.address}";`);
   console.log(`export const NFTAddress = "${nft.address}";`);
+
   // console.log(`export const SwapAddress = ${swap.address}`)
   console.log("SAVE THESE LINES THIS IS CRUCIAL")
 }

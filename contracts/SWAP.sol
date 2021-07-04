@@ -7,8 +7,9 @@ import "./lib/Context.sol";
 import "./lib/ReentrancyGuard.sol";
 //import "./NFTLootboxNFT.sol";
 import "./NFT.sol";
+//import "./lib/IERC1155Receiver.sol";
 
-contract SWAP is Context, ReentrancyGuard {
+contract SWAP is Context, ReentrancyGuard, IERC1155Receiver {
     address public authAddress;
     //IERC1155 private NFTInstance;
 
@@ -38,6 +39,7 @@ contract SWAP is Context, ReentrancyGuard {
         address signer = ecrecover(hash, v, r, s);
         require(signer == authAddress, "Invalid signature");
 
+
         //transfering nfts to contract
         NFTInstance.safeBatchTransferFrom(_msgSender(), address(this), idArr, quantArr, "");
 
@@ -46,6 +48,29 @@ contract SWAP is Context, ReentrancyGuard {
 
         // the one nft is awarded to the user
         NFTInstance.safeTransferFrom(authAddress, _msgSender(), prizeID, 1, "");
-    }
 
+    }
+        function onERC1155Received(
+            address operator,
+            address from,
+            uint256 id,
+            uint256 value,
+            bytes calldata data
+        ) public override returns(bytes4){
+            return 0xf23a6e61;
+        }
+
+        function onERC1155BatchReceived(
+            address operator,
+            address from,
+            uint256[] calldata ids,
+            uint256[] calldata values,
+            bytes calldata data
+        ) public override returns(bytes4){
+            return 0xbc197c81;
+        }
+
+        function supportsInterface(bytes4 interfaceId) public view override returns (bool) {
+            return false;
+        }
 }
