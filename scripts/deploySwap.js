@@ -9,7 +9,7 @@ async function main(){
     await hre.run("compile");
 
     
-    const NFTAddress = "0x56e6f9b71B919A9b19094Da2fD1d8A3A8aa69F0D";
+    const NFTAddress = "0x8C2e8CDCFe03210477aC495526D93bD97336172B";
 
     
    // const SwapAddress = 0x4D767662683F4ca754889685b1919784ec16F4bb'
