@@ -128,6 +128,11 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "sigId",
+        "type": "uint256"
+      },
+      {
         "internalType": "uint256[]",
         "name": "idArr",
         "type": "uint256[]"
