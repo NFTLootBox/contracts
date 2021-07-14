@@ -25,7 +25,6 @@ contract SWAP is Context, ReentrancyGuard, IERC1155Receiver {
         for(uint i = 0; i < _burnedAmount.length; i++){
             quantity += _burnedAmount[i];
         }
-        require(quantity == 10);
     }
 
     // This is for users to swap their nfts with the sites inventory
